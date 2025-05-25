@@ -1,0 +1,22 @@
+created:
+    - database/factories/BarangFactory.php
+    - database/factories/BarangMasukFactory.php
+    - database/factories/BarangKeluarFactory.php
+    - database/factories/PinjamanFactory.php
+    - database/factories/PengembalianFactory.php
+    - database/migrations/2025_05_18_094645_create_barangs_table.php
+    - database/migrations/2025_05_18_094646_create_barang_masuks_table.php
+    - database/migrations/2025_05_18_094647_create_barang_keluars_table.php
+    - database/migrations/2025_05_18_094648_create_pinjamen_table.php
+    - database/migrations/2025_05_18_094649_create_pengembalians_table.php
+    - app/Models/Barang.php
+    - app/Models/BarangMasuk.php
+    - app/Models/BarangKeluar.php
+    - app/Models/Pinjaman.php
+    - app/Models/Pengembalian.php
+models:
+    Barang: { code: varchar, name: varchar, merk: varchar, image: varchar, stock: varchar, status: varchar, hasMany: 'BarangMasuk BarangKeluar Pinjaman Pengembalian' }
+    BarangMasuk: { barang_id: id, belongsTo: Barang, jumlah: integer, tglMasuk: date, keterangan: text }
+    BarangKeluar: { barang_id: id, belongsTo: Barang, jumlah: integer, tglKeluar: date, keterangan: text }
+    Pinjaman: { barang_id: id, belongsTo: Barang, name: varchar, jenis: varchar, jumlah: integer, tglPinjam: date, tglKembali: date, status: varchar, hasMany: Pengembalian }
+    Pengembalian: { barang_id: id, pinjaman_id: id, belongsTo: 'Barang Pinjaman', jumlah: integer, tglKembali: date, status: varchar }

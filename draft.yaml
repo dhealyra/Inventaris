@@ -1,0 +1,49 @@
+models:
+  Barang:
+    code: varchar
+    name: varchar
+    merk: varchar
+    image: varchar
+    stock: varchar
+    status: varchar
+    hasMany:
+      - BarangMasuk
+      - BarangKeluar
+      - Pinjaman
+      - Pengembalian
+
+  BarangMasuk:
+    barang_id: id
+    belongsTo: Barang
+    jumlah: integer
+    tglMasuk: date
+    keterangan: text
+
+  BarangKeluar:
+    barang_id: id
+    belongsTo: Barang
+    jumlah: integer
+    tglKeluar: date
+    keterangan: text
+
+  Pinjaman:
+    barang_id: id
+    belongsTo: Barang
+    name: varchar
+    jenis: varchar
+    jumlah: integer
+    tglPinjam: date
+    tglKembali: date
+    status: varchar
+    hasMany:
+      - Pengembalian
+
+  Pengembalian:
+    barang_id: id
+    pinjaman_id: id
+    belongsTo:
+      - Barang
+      - Pinjaman
+    jumlah: integer
+    tglKembali: date
+    status: varchar
