@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\PinjamanController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +35,15 @@ Route::prefix('admin')->middleware('auth',RoleMiddleware::class)->group(function
     Route::resource('petugas', PetugasController::class);
 
     Route::resource('barang', BarangController::class);
+
+    Route::resource('barang-masuk', BarangMasukController::class);
+
+    Route::resource('barang-keluar', BarangKeluarController::class);
+
+    Route::resource('pengembalian', PengembalianController::class);
+
+    Route::resource('peminjaman', PinjamanController::class);
+
 });
 
 

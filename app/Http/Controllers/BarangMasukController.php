@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
 
 class BarangMasukController extends Controller
@@ -13,7 +14,9 @@ class BarangMasukController extends Controller
      */
     public function index()
     {
-        //
+        $data['barang_masuk'] = BarangMasuk::all();
+
+        return view('barang-masuk.index', $data);
     }
 
     /**
@@ -23,7 +26,7 @@ class BarangMasukController extends Controller
      */
     public function create()
     {
-        //
+        return view('barang-masuk.create');
     }
 
     /**
@@ -32,9 +35,25 @@ class BarangMasukController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req)
     {
-        //
+        $req->validate([
+            'kode_barang' => 'required',
+            'jumlah' => 'required',
+            'tanggal_masuk' => 'required',
+            'keterangan' => 'required',
+            'id_barang' => 'required',
+        ]);
+
+        BarangMasuk::create([
+            'kode_barang' => $req->kode_barang,
+            'jumlah' => $req->jumlah,
+            'tanggal_masuk' => $req->tanggal_masuk,
+            'keterangan' => $req->keterangan,
+            'id_barang' => $req->id_barang,
+        ]);
+
+        return redirect('barang-keluar.index');
     }
 
     /**
@@ -56,7 +75,9 @@ class BarangMasukController extends Controller
      */
     public function edit($id)
     {
-        //
+        $barang_masuk = BarangMasuk::where('id', $id)->first();
+
+        return view('barang-masuk.edit', $barang_masuk);
     }
 
     /**
@@ -66,9 +87,25 @@ class BarangMasukController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $req, $id)
     {
-        //
+        $req->validate([
+            'kode_barang' => 'required',
+            'jumlah' => 'required',
+            'tanggal_masuk' => 'required',
+            'keterangan' => 'required',
+            'id_barang' => 'required',
+        ]);
+
+        BarangMasuk::where('id', $id)->update([
+            'kode_barang' => $req->kode_barang,
+            'jumlah' => $req->jumlah,
+            'tanggal_masuk' => $req->tanggal_masuk,
+            'keterangan' => $req->keterangan,
+            'id_barang' => $req->id_barang,
+        ]);
+
+        return redirect('barang-masuk.index');
     }
 
     /**
@@ -79,6 +116,8 @@ class BarangMasukController extends Controller
      */
     public function destroy($id)
     {
-        //
+        BarangMasuk::where('id', $id)->delete();
+
+        return redirect('barang-masuk.index');
     }
 }

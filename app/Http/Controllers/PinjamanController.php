@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pinjaman;
 use Illuminate\Http\Request;
 
 class PinjamanController extends Controller
@@ -13,7 +14,9 @@ class PinjamanController extends Controller
      */
     public function index()
     {
-        //
+        $data['peminjaman'] = Pinjaman::all();
+
+        return view('peminjaman.index', $data);
     }
 
     /**
@@ -23,7 +26,7 @@ class PinjamanController extends Controller
      */
     public function create()
     {
-        //
+        return view('peminjaman.create');
     }
 
     /**
@@ -32,9 +35,29 @@ class PinjamanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req)
     {
-        //
+        $req->validate([
+            'kode_barang' => 'required',
+            'jumlah' => 'required',
+            'tanggal_pinjam' => 'required',
+            'tanggal_kembali' => 'required',
+            'nama_peminjam' => 'required',
+            'status' => 'required',
+            'id_barang' => 'required',
+        ]);
+
+        Pinjaman::create([
+            'kode_barang' => $req->kode_barang,
+            'jumlah' => $req->jumlah,
+            'tanggal_pinjam' => $req->tanggal_pinjam,
+            'tanggal_kembali' => $req->tanggal_kembali,
+            'nama_peminjam' => $req->nama_peminjam,
+            'status' => $req->status,
+            'id_barang' => $req->id_barang,
+        ]);
+
+        return redirect('peminjaman.index');
     }
 
     /**
@@ -56,7 +79,9 @@ class PinjamanController extends Controller
      */
     public function edit($id)
     {
-        //
+        $peminjaman = Pinjaman::where('id', $id)->first();
+
+        return view('peminjaman.edit', $peminjaman);
     }
 
     /**
@@ -66,9 +91,29 @@ class PinjamanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $req, $id)
     {
-        //
+        $req->validate([
+            'kode_barang' => 'required',
+            'jumlah' => 'required',
+            'tanggal_pinjam' => 'required',
+            'tanggal_kembali' => 'required',
+            'nama_peminjam' => 'required',
+            'status' => 'required',
+            'id_barang' => 'required',
+        ]);
+
+        Pinjaman::where('id', $id)->update([
+            'kode_barang' => $req->kode_barang,
+            'jumlah' => $req->jumlah,
+            'tanggal_pinjam' => $req->tanggal_pinjam,
+            'tanggal_kembali' => $req->tanggal_kembali,
+            'nama_peminjam' => $req->nama_peminjam,
+            'status' => $req->status,
+            'id_barang' => $req->id_barang,
+        ]);
+
+        return redirect('peminjaman.index');
     }
 
     /**
@@ -79,6 +124,8 @@ class PinjamanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Pinjaman::where('id', $id)->delete();
+
+        return redirect('peminjaman.index');
     }
 }
