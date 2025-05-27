@@ -12,7 +12,7 @@
                     {{-- Filter Status (hanya untuk admin) --}}
                     @php
                         $user = Auth::user();
-                        $statusList = ['barangumum', 'barangrpl', 'barangtkr', 'barangtsm'];
+                        $statusList = ['umum', 'rpl', 'tkr', 'tsm'];
                         $activeStatus = request('status');
                     @endphp
 
@@ -22,7 +22,7 @@
                                 <a href="{{ route('barang.index', ['status' => $status]) }}"
                                 class="px-3 py-1 rounded-md text-sm font-medium
                                     {{ $activeStatus == $status ? 'bg-blue-600 text-white' : 'bg-white border border-blue-600 text-blue-600' }}">
-                                    {{ strtoupper($status) }}
+                                    BARANG {{ strtoupper($status) }}
                                 </a>
                             @endforeach
 

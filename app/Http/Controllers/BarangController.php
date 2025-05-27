@@ -34,10 +34,10 @@ class BarangController extends Controller
 
         if ($keyword) {
             $barangQuery->where(function ($query) use ($keyword) {
-                $query->where('nama', 'like', "%$keyword%")
-                    ->orWhere('merek', 'like', "%$keyword%")
-                    ->orWhere('kode_barang', 'like', "%$keyword%")
-                    ->orWhere('status_barang', 'like', "%$keyword%");
+                $query->where('name', 'like', "%$keyword%")
+                    ->orWhere('merk', 'like', "%$keyword%")
+                    ->orWhere('code', 'like', "%$keyword%")
+                    ->orWhere('status', 'like', "%$keyword%");
             });
         }
 
@@ -137,16 +137,20 @@ class BarangController extends Controller
     public function edit($id)
     {
         $user = Auth::user();
-        $barang = Barang::where('id', $id)->first();
+        $barang = Barang::findOrFail($id);
+        $locations = Location::all();
 
-        if ($user->status == 'admin') {
-            $statusList = ['rpl', 'tkr', 'tsm', 'umum'];
-        } else {
-            $statusList = array_filter(['rpl', 'tkr', 'tsm', 'umum'], fn($item) => $item === $user->status);
-        }
+        // Cek status user
+        $isAdmin = $user->status === 'admin';
 
-        return view('barang.edit', compact('barang', 'statusList'));
+        // List status tergantung role
+        $statusList = $isAdmin
+            ? ['rpl', 'tkr', 'tsm', 'umum']
+            : [$user->status]; // cuma status dia sendiri kalau bukan admin
+
+        return view('barang.edit', compact('barang', 'locations', 'statusList', 'isAdmin'));
     }
+
 
     /**
      * Update the specified resource in storage.

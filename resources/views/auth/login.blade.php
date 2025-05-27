@@ -5,7 +5,7 @@
 
     <div class="w-full card-body">
         <a href="../" class="py-4 block">
-            <img src="../assets/images/logos/logo-light.svg" alt="" class="mx-auto" />
+            <img src="{{ asset('/assets/images/logos/logorock.png') }}" alt="" class="mx-auto" />
         </a>
         <p class="mb-4 text-gray-400 text-sm text-center">SMK Assalaam Bandung</p>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarangMasukController extends Controller
 {
@@ -12,12 +13,50 @@ class BarangMasukController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['barang_masuk'] = BarangMasuk::all();
+        $user = Auth::user();
+        $keyword = $request->input('search');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        return view('barang-masuk.index', $data);
+        // Mulai bikin query utama
+        $query = BarangMasuk::with('barang')
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->whereHas('barang', function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%$keyword%")
+                    ->orWhere('merek', 'like', "%$keyword%");
+                });
+            })
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('tanggal_masuk', [$startDate, $endDate]);
+            })
+            ->when($startDate && !$endDate, function ($query) use ($startDate) {
+                $query->whereDate('tanggal_masuk', '>=', $startDate);
+            })
+            ->when(!$startDate && $endDate, function ($query) use ($endDate) {
+                $query->whereDate('tanggal_masuk', '<=', $endDate);
+            })
+            ->when($user->status_user !== 'admin', function ($query) use ($user) {
+                $query->whereHas('barang', function ($q) use ($user) {
+                    $q->where('status', $user->status_user);
+                });
+            });
+
+        // Tambahan pencarian di kolom sendiri (kode_barang, merk, code, status)
+        if ($keyword) {
+            $query->orWhere('kode_barang', 'like', "%$keyword%")
+                ->orWhere('merk', 'like', "%$keyword%")
+                ->orWhere('code', 'like', "%$keyword%")
+                ->orWhere('status', 'like', "%$keyword%");
+        }
+
+        // Ambil data dengan pagination
+        $barang = $query->orderBy('id', 'asc')->paginate(100);
+
+        return view('barang-masuk.index', compact('barang'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -53,7 +92,7 @@ class BarangMasukController extends Controller
             'id_barang' => $req->id_barang,
         ]);
 
-        return redirect('barang-keluar.index');
+        return redirect('barang-masuk.index');
     }
 
     /**

@@ -43,22 +43,6 @@
                 placeholder="Contoh: 5" required>
         </div>
 
-        {{-- Foto Barang + Preview --}}
-        <div class="md:col-span-2">
-            <label for="image" class="block text-lg font-semibold text-gray-700 mb-2">Foto Barang (Opsional)</label>
-            <label for="image"
-                class="flex flex-col items-center justify-center gap-2 px-6 py-6 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-blue-50 transition duration-200">
-                <span class="text-sm text-gray-600">Klik untuk pilih gambar</span>
-                <input type="file" name="image" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
-            </label>
-
-            <div id="preview-container" class="mt-4 hidden">
-                <p class="text-sm text-gray-600 mb-2">Preview Gambar:</p>
-                <img id="image-preview" src="#" alt="Preview" class="max-h-40 rounded-xl shadow-md">
-            </div>
-        </div>
-
-
         {{-- Lokasi --}}
         <div>
             <label for="id_location" class="block font-semibold text-gray-700 mb-2">Lokasi Barang</label>
@@ -76,7 +60,7 @@
 
         {{-- Status Barang (Admin Only) --}}
         @if ($isAdmin)
-        <div>
+        <div class="md:col-span-2">
             <label for="status" class="block font-semibold text-gray-700 mb-2">Status Barang</label>
             <select name="status" id="status"
                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-base bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -88,6 +72,17 @@
             </select>
         </div>
         @endif
+
+        {{-- Foto Barang + Preview (Full Width) --}}
+        <div class="md:col-span-2">
+            <label for="image" class="block font-semibold text-gray-700 mb-2">Foto Barang (Opsional)</label>
+            <label for="image" id="upload-button"
+                class="flex items-center gap-3 px-6 py-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-blue-50 transition duration-200">
+                <img id="icon-preview" src="https://cdn-icons-png.flaticon.com/512/1829/1829586.png" alt="Upload Icon" class="w-10 h-10 object-cover rounded-md">
+                <span class="text-sm text-gray-600">Klik untuk pilih gambar</span>
+                <input type="file" name="image" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
+            </label>
+        </div>
 
         {{-- Tombol --}}
         <div class="md:col-span-2 flex gap-4 mt-4">
@@ -102,4 +97,5 @@
         </div>
     </form>
 </div>
+
 @endsection

@@ -22,6 +22,25 @@
     <title>Rockhool</title>
 </head>
 <body class="bg-surface">
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const icon = document.getElementById('icon-preview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    icon.src = e.target.result;
+                    icon.classList.add('rounded-md');
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+
 
     <div id="main-wrapper" class="flex pt-0 p-5 xl:pr-0">
         <!-- SIDEBAR -->

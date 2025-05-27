@@ -9,10 +9,12 @@ class BarangMasuk extends Model
 {
     use HasFactory;
 
+    protected $table = 'barangmasuks';
+
     protected $fillable = [
-        'barangId',
-        'jumlah',
-        'tglMasuk',
+        'kode_barang',
+        'id_barang',
+        'tanggal_masuk',
         'keterangan',
     ];
 
@@ -20,6 +22,6 @@ class BarangMasuk extends Model
     
     public function barang()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(Barang::class, 'id_barang');
     }
 }

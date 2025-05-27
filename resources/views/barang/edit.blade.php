@@ -30,23 +30,59 @@
                 class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         </div>
 
-        {{-- Gambar Saat Ini --}}
+        {{-- Lokasi Barang --}}
         <div>
+            <label for="id_location" class="block mb-2 font-medium text-gray-700">Lokasi Barang</label>
+            <select name="id_location" id="id_location"
+                class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <option value="">-- Pilih Lokasi --</option>
+                @foreach ($locations as $location)
+                    <option value="{{ $location->id }}" {{ old('id_location', $barang->id_location) == $location->id ? 'selected' : '' }}>
+                        {{ $location->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Status Barang --}}
+        @if ($isAdmin)
+        <div class="md:col-span-2">
+            <label for="status" class="block mb-2 font-medium text-gray-700">Status Barang</label>
+            <select name="status" id="status"
+                class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <option value="">-- Pilih Status --</option>
+                @foreach ($statusList as $status)
+                    <option value="{{ $status }}" {{ old('status', $barang->status) == $status ? 'selected' : '' }}>
+                        {{ strtoupper($status) }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+
+        {{-- Gambar Saat Ini --}}
+        
+        <div class="md:col-span-2 flex flex-col items-center justify-center text-center">
             <label class="block mb-2 font-medium text-gray-700">Gambar Saat Ini</label>
             @if ($barang->image)
-                <img src="{{ asset('storage/' . $barang->image) }}" class="w-32 h-auto rounded-lg shadow">
+                <img src="{{ asset('image/barang/' . $barang->image) }}" class="w-32 h-auto rounded-lg shadow">
             @else
                 <p class="text-sm text-gray-500 italic">Tidak ada gambar</p>
             @endif
         </div>
 
-        {{-- Upload Gambar Baru --}}
-        <div class="flex flex-col gap-2">
-            <label for="image" class="text-gray-700 font-medium">Upload Gambar Baru (opsional)</label>
-            <input type="file" name="image" id="image"
-                class="rounded-xl border-gray-300 px-4 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
 
+
+        {{-- Upload Gambar Baru --}}
+        <div class="md:col-span-2">
+            <label for="image" class="block font-semibold text-gray-700 mb-2">Upload Foto Baru(Opsional)</label>
+            <label for="image" id="upload-button"
+                class="flex items-center gap-3 px-6 py-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-blue-50 transition duration-200">
+                <img id="icon-preview" src="https://cdn-icons-png.flaticon.com/512/1829/1829586.png" alt="Upload Icon" class="w-10 h-10 object-cover rounded-md">
+                <span class="text-sm text-gray-600">Klik untuk pilih gambar</span>
+                <input type="file" name="image" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
+            </label>
+        </div>
 
         {{-- Tombol --}}
         <div class="md:col-span-2 flex gap-4 pt-6">
