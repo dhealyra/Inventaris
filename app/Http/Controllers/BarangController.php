@@ -137,15 +137,15 @@ class BarangController extends Controller
     public function edit($id)
     {
         $user = Auth::user();
-        if ($user->status_user == 'admin') {
-            $barang = Barang::findOrFail($id);
+        $barang = Barang::where('id', $id)->first();
+
+        if ($user->status == 'admin') {
+            $statusList = ['rpl', 'tkr', 'tsm', 'umum'];
         } else {
-            $barang = Barang::where('status', $user->status_user)
-                        ->where('id', $id)
-                        ->firstOrFail();
+            $statusList = array_filter(['rpl', 'tkr', 'tsm', 'umum'], fn($item) => $item === $user->status);
         }
 
-        return view('barang.edit', compact('barang'));
+        return view('barang.edit', compact('barang', 'statusList'));
     }
 
     /**
