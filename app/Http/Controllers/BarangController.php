@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,18 +22,26 @@ class BarangController extends Controller
 
     public function index(Request $request)
     {
-        $query = Barang::query();
+        $barangQuery = Barang::query();
         $user = Auth::user();
+        $keyword = $request->input('search');
 
         if ($user->status !== 'admin') {
-            $query->where('status', 'barang' . $user->status);
+            $barangQuery->where('status', 'barang' . $user->status);
+        } elseif ($request->has('status') && $request->status != '') {
+            $barangQuery->where('status', $request->status);
         }
 
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', $request->status);
+        if ($keyword) {
+            $barangQuery->where(function ($query) use ($keyword) {
+                $query->where('nama', 'like', "%$keyword%")
+                    ->orWhere('merek', 'like', "%$keyword%")
+                    ->orWhere('kode_barang', 'like', "%$keyword%")
+                    ->orWhere('status_barang', 'like', "%$keyword%");
+            });
         }
 
-        $barang = $query->get();
+        $barang = $barangQuery->orderBy('id', 'asc')->paginate(100);
 
         return view('barang.index', compact('barang'));
     }
@@ -48,9 +57,12 @@ class BarangController extends Controller
 
         $statusList = ['rpl', 'tkr', 'tsm', 'umum'];
 
+        $locations = Location::all();
+
         return view('barang.create', [
             'statusList' => $statusList,
-            'isAdmin' => $user->status == 'admin' 
+            'isAdmin' => $user->status == 'admin' ,
+            'locations'=> $locations,
         ]);
     }
 
@@ -64,27 +76,34 @@ class BarangController extends Controller
     {
         $user = Auth::user();
 
+        // Validasi input dari form
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'merk'  => 'required|string|max:255',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048',
-            'status' => $user->role === 'admin' ? 'required|in:rpl,tkr,tsm,umum' : '', // validasi status klo admin
+            'name'       => 'required|string|max:255',
+            'merk'       => 'required|string|max:255',
+            'stock'      => 'required|integer|min:0',
+            'image'      => 'nullable|image|max:2048',
+            'id_location'=> 'required|integer', 
+            'status'     => $user->role === 'admin' ? 'required|in:rpl,tkr,tsm,umum' : '',
         ]);
 
+        // Tentukan status berdasarkan role user
         $status = $user->status === 'admin' ? $request->status : $user->status_user;
 
+        // Generate kode barang otomatis
         $lastRecord = Barang::latest('id')->first();
         $lastId = $lastRecord ? $lastRecord->id : 0;
         $code = 'B-' . str_pad($lastId + 1, 4, '0', STR_PAD_LEFT);
 
+        // Simpan data ke database
         $barang = new Barang;
         $barang->code = $code;
         $barang->name = $request->name;
         $barang->merk = $request->merk;
         $barang->stock = $request->stock;
         $barang->status = $status;
+        $barang->id_location = $request->id_location; 
 
+        // Upload gambar kalo ada
         if($request->hasFile('image')) {
             $img = $request->file('image');
             $name = rand(1000,9999) . $img->getClientOriginalName();
@@ -96,6 +115,7 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.
@@ -138,17 +158,19 @@ class BarangController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'merk'  => 'required|string|max:255',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048',
+            'name'        => 'required|string|max:255',
+            'merk'        => 'required|string|max:255',
+            'stock'       => 'required|integer|min:0',
+            'image'       => 'nullable|image|max:2048',
+            'id_location' => 'required|integer', // ✅ tambahin validasi id_location
         ]);
 
         $barang = Barang::findOrFail($id);
 
-        $barang->name  = $request->name;
-        $barang->merk  = $request->merk;
-        $barang->stock = $request->stock;
+        $barang->name        = $request->name;
+        $barang->merk        = $request->merk;
+        $barang->stock       = $request->stock;
+        $barang->id_location = $request->id_location;
 
         if($request->hasFile('image')) {
             $barang->deleteImage();
@@ -162,6 +184,7 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.

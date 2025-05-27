@@ -1,35 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h4 class="mb-4">Tambah Data Lokasi</h4>
+<div class="container mx-auto px-4 py-6">
+    <h4 class="text-2xl font-semibold text-gray-700 mb-6">Tambah Data Lokasi</h4>
 
-    <form action="{{ route('locations.store') }}" method="POST">
-        @csrf
+    <div class="bg-white shadow rounded-lg p-6">
+        <form action="{{ route('locations.store') }}" method="POST" class="flex flex-col gap-6">
+            @csrf
 
-        <div class="mb-3">
-            <label for="jurusan" class="form-label">Jurusan</label>
-            <select class="form-select" name="jurusan" id="jurusan" required>
-                <option value="">-- Pilih Jurusan --</option>
-                <option value="RPL">RPL</option>
-                <option value="TBSM">TBSM</option>
-                <option value="TKRO">TKRO</option>
-                <option value="UMUM">UMUM</option>
-            </select>
-        </div>
+            <div>
+                <label for="jurusan" class="block text-sm font-medium text-gray-700 mb-1">Jurusan</label>
+                <select id="jurusan" name="jurusan" required
+                    class="py-3 px-4 block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">-- Pilih Jurusan --</option>
+                    <option value="RPL">RPL</option>
+                    <option value="TBSM">TBSM</option>
+                    <option value="TKRO">TKRO</option>
+                    <option value="UMUM">UMUM</option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label for="name" class="form-label">Nama Ruangan</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-        </div>
+            <!-- NAMA RUANGAN -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Ruangan</label>
+                <input type="text" name="name" id="name" required
+                    class="py-3 px-4 block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Contoh: Lab RPL">
+            </div>
 
-        <div class="mb-3">
-            <label for="description" class="form-label">Deskripsi</label>
-            <textarea class="form-control" name="description" id="description" rows="3"></textarea>
-        </div>
+            <!-- DESKRIPSI -->
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                <textarea name="description" id="description" rows="4"
+                    class="py-3 px-4 block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Tulis deskripsi ruangan jika perlu..."></textarea>
+            </div>
 
-        <button type="submit" class="btn btn-success">Simpan</button>
-        <a href="{{ route('locations.index') }}" class="btn btn-secondary">Kembali</a>
-    </form>
+            <!-- BUTTON -->
+            <div class="flex gap-4">
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md">
+                    Simpan
+                </button>
+                <a href="{{ route('locations.index') }}"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-md">
+                    Kembali
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
