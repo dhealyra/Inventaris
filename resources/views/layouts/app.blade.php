@@ -19,7 +19,7 @@
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
 
-    <title>Spike TailwindCSS HTML Admin Template</title>
+    <title>Rockhool</title>
 </head>
 <body class="bg-surface">
 
