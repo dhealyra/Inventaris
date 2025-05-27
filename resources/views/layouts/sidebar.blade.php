@@ -14,6 +14,11 @@
               </a>
             </li>
             <li class="sidebar-item">
+              <a class="sidebar-link gap-3 py-2.5 my-1 text-base  flex items-center relative  rounded-md text-gray-500  w-full" href="{{ route('barang-keluar.index') }}">
+                <i class="ti ti-layout-dashboard ps-2  text-2xl"></i> <span>Barang Keluar</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
               <a class="sidebar-link gap-3 py-2.5 my-1 text-base  flex items-center relative  rounded-md text-gray-500  w-full" href="{{ route('locations.index') }}">
                 <i class="ti ti-layout-dashboard ps-2  text-2xl"></i> <span>Location</span>
               </a>

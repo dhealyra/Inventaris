@@ -36,7 +36,7 @@
 
                     <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-3">
                         <a href="{{ route('barang.create') }}"
-                        class="py-3 px-8 rounded-sm text-lg font-semibold border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                        class="py-3 px-8 rounded-sm text-sm font-semibold border border-transparent bg-blue-500 text-white hover:bg-blue-500">
                             + Tambah Barang
                         </a>
 

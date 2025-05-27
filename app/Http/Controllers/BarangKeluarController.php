@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 
@@ -14,9 +15,17 @@ class BarangKeluarController extends Controller
      */
     public function index()
     {
-        $data['barang_keluar'] = BarangKeluar::all();
+        $user = auth()->user();
 
-        return view('barang-keluar.index', $data);
+        if ($user->status === 'admin') {
+            $barang_keluar = BarangKeluar::with('barang')->get();
+        } else {
+            $barang_keluar = BarangKeluar::whereHas('barang', function ($q) use ($user) {
+                $q->where('status', $user->status);
+            })->with('barang')->get();
+        }
+
+        return view('barang-keluar.index', compact('barang_keluar'));
     }
 
     /**
@@ -26,7 +35,8 @@ class BarangKeluarController extends Controller
      */
     public function create()
     {
-        return view('barang-keluar.create');
+        $barang = Barang::all();
+        return view('barang-keluar.create', compact('barang'));
     }
 
     /**
@@ -105,8 +115,9 @@ class BarangKeluarController extends Controller
             'id_barang' => $req->id_barang,
         ]);
 
-        return redirect('barang-keluar.index');
+        return redirect()->route('barang-keluar.index')->with('success', 'Data berhasil diupdate!');
     }
+
 
     /**
      * Remove the specified resource from storage.
